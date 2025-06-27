@@ -84,7 +84,6 @@ while True:
 
 filenames=[]
 urls=[]
-vidLinks=[]
 useOneQ=''
 statQ=999
 mesSh=False
@@ -100,6 +99,7 @@ if browser=='Chrome':
 else:
     driver=webdriver.Edge(options=optionS)
 for vid in range(vidCount):
+    vidLinks=[]
     print('Пожалуйста,подождите...')
     driver.get(urls[vid])
     time.sleep(10)
@@ -107,51 +107,50 @@ for vid in range(vidCount):
     getQL=driver.execute_script('return(window.cur?.videoInlinePlayer.vars)')
     if getQL=='undefined':
         getQL=driver.execute_script('return(window.mvcur?.player?.vars)')
-    if statQ==999:
-        print('Выберите качество:')
+    print('Выберите качество:')
+    try:
+        vidLinks.append(getQL['url144'])
+        print('1)144')
+        vidLinks.append(getQL['url240'])
+        print('2)280')
+        vidLinks.append(getQL['url360'])
+        print('3)360')
+        vidLinks.append(getQL['url480'])
+        print('4)480')
+        vidLinks.append(getQL['url720'])
+        print('5)720')
+        vidLinks.append(getQL['url1080'])
+        print('6)1080')
+        vidLinks.append(getQL['url1440'])
+        print('7)1440')
+        vidLinks.append(getQL['url2160'])
+        print('8)2160')
+    except:
+        corrQ=False
+    corrQ=False
+    if len(vidLinks)==0:
         try:
-            vidLinks.append(getQL['url144'])
-            print('1)144')
-            vidLinks.append(getQL['url240'])
-            print('2)280')
-            vidLinks.append(getQL['url360'])
-            print('3)360')
-            vidLinks.append(getQL['url480'])
-            print('4)480')
-            vidLinks.append(getQL['url720'])
-            print('5)720')
             vidLinks.append(getQL['url1080'])
-            print('6)1080')
+            print('1)1080')
             vidLinks.append(getQL['url1440'])
-            print('7)1440')
+            print('2)1440')
             vidLinks.append(getQL['url2160'])
-            print('8)2160')
+            print('3)2160')
         except:
             corrQ=False
-        corrQ=False
-        if len(vidLinks)==0:
-            try:
-                vidLinks.append(getQL['url1080'])
-                print('1)1080')
-                vidLinks.append(getQL['url1440'])
-                print('2)1440')
-                vidLinks.append(getQL['url2160'])
-                print('3)2160')
-            except:
-                corrQ=False
-            finally:
-                print('Внимание! Более низкие качества можно скачать только как HLS,')
-                print('а это пока не поддерживается. Следите за обновлениями!')
-        while corrQ==False:
-            try:
-                qual=int(input())
-                corrQ=True
-            except:
-                print('Использовано неверное значение.')
+        finally:
+            print('Внимание! Более низкие качества можно скачать только как HLS,')
+            print('а это пока не поддерживается. Следите за обновлениями!')
+    while corrQ==False and statQ==999:
+        try:
+            qual=int(input())
+            corrQ=True
+        except:
+            print('Использовано неверное значение.')
     while mesSh==False:
         useOneQ=input('Использовать это качество для всех видео? д/н: ')
         if useOneQ=='д' or useOneQ=='Д' or useOneQ=='d' or useOneQ=='D':
-            statQ=qual
+            statQ=qual-1
             mesSh=True
         elif useOneQ=='н' or useOneQ=='Н' or useOneQ=='n' or useOneQ=='N':
             mesSh=True
@@ -160,12 +159,13 @@ for vid in range(vidCount):
     completed=False
     if statQ!=999:
         qual=statQ
+        print('Авто-качество: '+str(qual+1))
     else:
         qual=qual-1
     print('Пожалуйста,подождите...')
-    link=vidLinks[qual-1]
+    link=vidLinks[qual]
     link,vidID=link.split('id=')
-    driver.get(vidLinks[qual-1])
+    driver.get(vidLinks[qual])
     time.sleep(10)
     while completed==False:
         try:

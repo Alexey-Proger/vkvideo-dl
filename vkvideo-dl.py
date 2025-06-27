@@ -81,9 +81,9 @@ for vid in range(vidCount):
     else:
         qual=qual-1
     print('Пожалуйста,подождите...')
-    link=vidLinks[qual]
+    link=vidLinks[qual-1]
     link,vidID=link.split('id=')
-    driver.get(vidLinks[qual])
+    driver.get(vidLinks[qual-1])
     time.sleep(10)
     while completed==False:
         try:
@@ -100,4 +100,4 @@ try:
 except:
     print()
 print('Скачивание всех файлов завершено.')
-input('Нажмите Enter для закрытия программы.')
+print('Теперь вы можете закрыть программу.')

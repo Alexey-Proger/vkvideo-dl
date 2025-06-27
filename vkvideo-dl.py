@@ -15,6 +15,8 @@ except:
     print('Файл конфигурации не найден!')
     print('Edge установлен как браузер.')
     browser='Edge'
+    conf={}
+    conf['browser']=browser
 else:
     browser=conf['browser']
 

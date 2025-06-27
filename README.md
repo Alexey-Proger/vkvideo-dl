@@ -3,7 +3,7 @@ Vkvideo-dl - это утилита для быстрого потокового 
 
 [![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white)](#)
 [![License: Unlicense](https://img.shields.io/github/license/anijackich/kinescope-dl)](https://github.com/Alexey-Proger/vkvideo-dl/blob/main/LICENSE)
-[![Release](https://img.shields.io/github/v/release/anijackich/kinescope-dl)](https://github.com/Alexey-Proger/vkvideo-dl/releases)
+[![Release](https://img.shields.io/github/v/release/anijackich/kinescope-dl)](https://github.com/Alexey-Proger/vkvideo-dl/releases/latest)
 > [!WARNING]
 > **Данный материал предоставляется автором для ознакомления.**
 >

@@ -8,6 +8,67 @@ from selenium.webdriver.edge.options import Options
 options = Options()
 options.add_argument('--headless')
 
+try:
+    with open('vkvideo-dl.json','r') as rfile:
+        conf=json.load(rfile)
+except:
+    print('Файл конфигурации не найден!')
+    print('Edge установлен как браузер.')
+    browser='Edge'
+else:
+    browser=conf['browser']
+
+while True:
+    sel=0
+    print('Выберите действие:')
+    print('1) Скачать видео')
+    print('2) Войти в аккаунт ВК')
+    print('3) Изменить браузер')
+    sel=str(input())
+    if sel=='1':
+        break
+    elif sel=='2':
+        print('Сейчас откроется окно браузера с главной ВК')
+        print('Пожалуйста, войдите в аккаунт и нажмите Enter в консоли.')
+        if browser=='Chrome':
+            driver=webdriver.Chrome()
+        else:
+            driver=webdriver.Edge()
+        driver.get('https://vk.com/')
+        input()
+        try:
+            driver.close()
+        except:
+            ficha=1
+        print('Ок')
+    elif sel=='3':
+        print('Выберите браузер (текущий - '+browser+')')
+        print('1) Edge')
+        print('2) Chrome')
+        print('0) Отмена')
+        ok=False
+        while ok==False:
+            selBr=str(input())
+            if selBr=='1':
+                browser='Edge'
+                ok=True
+                print('Браузер изменён на Edge')
+            elif selBr=='2':
+                browser='Chrome'
+                ok=True
+                print('Браузер изменён на Chrome')
+            elif selBr=='0':
+                ok=True
+                print('Отмена')
+            else:
+                print('Ошибка. Попробуйте ещё раз')
+    else:
+        print('Выбрано несуществующее действие.')
+    print(' ')
+conf['browser']=browser
+with open('vkvideo-dl.json','w') as wfile:
+    json.dump(conf,wfile,indent=2)
+
 print('Сколько видео надо скачать?')
 vidCount=input()
 while True:
@@ -30,11 +91,15 @@ for n in range(vidCount):
     filename=input('Введите название видео №'+str(n+1)+': ')
     filenames.append(filename)
 
-driver=webdriver.Edge(options=options)
+if browser=='Chrome':
+    driver=webdriver.Chrome(options=options)
+else:
+    driver=webdriver.Edge(options=options)
 for vid in range(vidCount):
     print('Пожалуйста,подождите...')
     driver.get(urls[vid])
     time.sleep(10)
+    print(' ')
     getQL=driver.execute_script('return(window.cur?.videoInlinePlayer.vars)')
     if getQL=='undefined':
         getQL=driver.execute_script('return(window.mvcur?.player?.vars)')
@@ -91,13 +156,13 @@ for vid in range(vidCount):
             os.remove('C:/Users/'+os.environ.get('USERNAME')+'/Downloads/'+vidID+'.mp4')
             completed=True
         except:
-            ficha=''
-            time.sleep(15)
+            time.sleep(10)
     print('Видео №'+str(vid+1)+' сохранено.')
+    print(' ')
 
 try:
     driver.close()
 except:
-    print()
+    ficha=1
 print('Скачивание всех файлов завершено.')
 print('Теперь вы можете закрыть программу.')

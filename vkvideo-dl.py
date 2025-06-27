@@ -3,10 +3,6 @@ import json
 import shutil
 import os
 from selenium import webdriver
-from selenium.webdriver.edge.options import Options
-
-options = Options()
-options.add_argument('--headless')
 
 try:
     with open('vkvideo-dl.json','r') as rfile:
@@ -15,10 +11,16 @@ except:
     print('Файл конфигурации не найден!')
     print('Edge установлен как браузер.')
     browser='Edge'
-    conf={}
-    conf['browser']=browser
 else:
     browser=conf['browser']
+
+from selenium.webdriver.edge.options import Options
+if browser=='Chrome':
+    from selenium.webdriver.chrome.options import Options
+else:
+    from selenium.webdriver.edge.options import Options
+optionS = Options()
+optionS.add_argument('--headless')
 
 while True:
     sel=0
@@ -72,8 +74,8 @@ with open('vkvideo-dl.json','w') as wfile:
     json.dump(conf,wfile,indent=2)
 
 print('Сколько видео надо скачать?')
-vidCount=input()
 while True:
+    vidCount=input()
     try:
         vidCount=int(vidCount)
         break
@@ -94,9 +96,9 @@ for n in range(vidCount):
     filenames.append(filename)
 
 if browser=='Chrome':
-    driver=webdriver.Chrome(options=options)
+    driver=webdriver.Chrome(options=optionS)
 else:
-    driver=webdriver.Edge(options=options)
+    driver=webdriver.Edge(options=optionS)
 for vid in range(vidCount):
     print('Пожалуйста,подождите...')
     driver.get(urls[vid])
@@ -127,6 +129,19 @@ for vid in range(vidCount):
         except:
             corrQ=False
         corrQ=False
+        if len(vidLinks)==0:
+            try:
+                vidLinks.append(getQL['url1080'])
+                print('1)1080')
+                vidLinks.append(getQL['url1440'])
+                print('2)1440')
+                vidLinks.append(getQL['url2160'])
+                print('3)2160')
+            except:
+                corrQ=False
+            finally:
+                print('Внимание! Более низкие качества можно скачать только как HLS,')
+                print('а это пока не поддерживается. Следите за обновлениями!')
         while corrQ==False:
             try:
                 qual=int(input())
@@ -164,6 +179,13 @@ for vid in range(vidCount):
 
 try:
     driver.close()
+    os.system("taskkill /im chromedriver.exe")
+    os.system("taskkill /t /im chrome.exe")
+except:
+    ficha=1
+try:
+    os.system("taskkill /im msedgedriver.exe")
+    os.system("taskkill /t /im msedge.exe")
 except:
     ficha=1
 print('Скачивание всех файлов завершено.')

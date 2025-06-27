@@ -1,4 +1,3 @@
-import wget
 import time
 import json
 import shutil
